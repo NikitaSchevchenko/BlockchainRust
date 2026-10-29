@@ -131,6 +131,19 @@ impl Block {
             && self.verify_signature()
     }
 
+    pub fn mine(&mut self) {
+        let target_prefix = "0".repeat(self.difficulty_target.len());
+
+        loop {
+            self.block_hash = self.calculate_hash();
+            if self.block_hash.starts_with(&target_prefix) {
+                self.sign_block();
+                break;
+            }
+            self.nonce += 1;
+        }
+    }
+
     pub fn set_version(&mut self, value: u64) {
         self.version = value;
         self.block_hash = self.calculate_hash();
